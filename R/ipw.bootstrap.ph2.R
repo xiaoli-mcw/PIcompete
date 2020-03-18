@@ -6,7 +6,7 @@
 #' 
 #' @param n.boot the number of replications for bootstrap resampling 
 #' @param parallel if parallel=TRUE, n.core should be specified. Default to FALSE.
-#' @n.core the nummber of cores for parallel computing
+#' @param n.core the nummber of cores for parallel computing
 #'
 #' @return The output is a list of class ipw.bootstrap.ph2, which contains the following elements.
 #'  \itemize{
@@ -27,7 +27,7 @@
 #'
 #' @export
 #'
-#'
+
 ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,trans.r2=0,n.beta=1, n.gamma1=0,n.gamma2=0,
                                  reg.initials=NULL,convergence.criteria=0.001,iteration.limit=250,
                                  time.interval,time.list=NULL,parallel=FALSE,n.core=NULL,...){
