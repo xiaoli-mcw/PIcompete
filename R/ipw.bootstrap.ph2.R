@@ -114,7 +114,7 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
       clusterExport(cl,c("fdrtool","nloptr","bootstrap.result","srs.bootstrap.data","ipw.pi.competing"))
       registerDoParallel(cl)
       res1 <- foreach(n = 1:n.boot*2, .combine = c, .packages = c("fdrtool","nloptr","bootstrap.result","srs.bootstrap.data","ipw.pi.competing"), .errorhandling=c('pass')) %dopar% 
-        when(b.iter==0){b.out<-bootstrap.result(Data))
+        while(b.iter==0){b.out<-bootstrap.result(Data)
               if(is.matrix((summary(res1)))){
                success.list<-which(summary(res1)[,1]!=0)
                n.success<-length(success.list)
