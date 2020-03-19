@@ -126,13 +126,13 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
       stopCluster(cl) 
       
       
-       summary.reg.coef<-sapply(X=success.list,FUN=function(X) res1[[X]]$reg.para$coef)
-       regpara.summary<-data.frame(cbind(t(summary.reg.coef[1:n.beta,]),
-             t(summary.reg.coef[mm1:mm2,]),
-             t(summary.reg.coef[mm3:mm4,])))
-               names(regpara.summary)<-c(paste0('beta.',seq(1,n.beta) ),
-                                      paste0('gam1.',seq(1,n.gamma1)),
-                                      paste0('gam2.',seq(1,n.gamma2)))
+      summary.reg.coef<-sapply(X=success.list,FUN=function(X) res1[[X]]$reg.para$coef)
+      regpara.summary<-data.frame(cbind(t(summary.reg.coef[1:n.beta,]),
+                                        t(summary.reg.coef[mm1:mm2,]),
+                                        t(summary.reg.coef[mm3:mm4,])))
+      names(regpara.summary)<-c(paste0('beta.',seq(1,n.beta) ),
+                                paste0('gam1.',seq(1,n.gamma1)),
+                                paste0('gam2.',seq(1,n.gamma2)))
                
               
        boot.reg<-data.frame(beta=t(regpara[1:n.beta]),gam1=t(regpara[mm1:mm2]),gam2=t(regpara[mm3:mm4]))
@@ -146,7 +146,7 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
     }else{
       while(b.iter<n.boot){
         b.out<-bootstrap.result(Data)
-        if(class(boot.out)=="list"){
+        if(class(b.out)=="list"){
           b.iter<-b.iter+1
           regpara<-as.numeric(as.character(b.out$reg.para$coef))
           regpara.summary<-data.frame(beta=t(regpara[1:n.beta]),gam1=t(regpara[mm1:mm2]),gam2=t(regpara[mm3:mm4]))
