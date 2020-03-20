@@ -32,6 +32,7 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
                                  reg.initials=NULL,convergence.criteria=0.001,iteration.limit=250,
                                  time.interval,time.list=NULL,parallel=FALSE,n.core=NULL,...){
   
+  
 ########## Functions #############################
   
   srs.bootstrap.data<-function(Data){
@@ -86,9 +87,10 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
   
   bootstrap.result<-function(Data){
     resamp.data<-srs.bootstrap.data(Data)
-    boot.out<-try(ipw.pi.competing(Data=resamp.data,p.model,i.model1,i.model2,trans.r1,trans.r2,n.beta, n.gamma1,n.gamma2,
-                                   convergence.criteria,iteration.limit,
-                                   time.interval,time.list,anal.var=FALSE),silent = TRUE)
+    boot.out<-ipw.pi.competing(Data=resamp.data,p.model=p.model,i.model1=i.model1,i.model2=i.model2,trans.r1=trans.r1,trans.r2=trans.r2,n.beta=n.beta, n.gamma1=n.gamma1,n.gamma2=n.gamma2,
+                                   reg.initials=NULL,convergence.criteria=convergence.criteria,iteration.limit=iteration.limit,
+                                   time.interval=time.interval,time.list=time.list,anal.var=FALSE)
+                  
     return(boot.out)
   }
   ##################################################
@@ -97,59 +99,55 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
   }
   
   
-  mm1<-n.beta+1
-  mm2<-n.beta+n.gamma1
-  mm3<-n.beta+n.gamma1+1
-  mm4<-n.beta+n.gamma1+n.gamma2
-  
-  b.iter<-0
-  boot.reg<-boot.L1<-boot.L2<-res1<-NULL
-  
       
     if(parallel==TRUE){
       library(parallel)
       library(doParallel)
       
+      
       cl <- makeCluster(n.core)
-      clusterExport(cl,c("fdrtool","nloptr","bootstrap.result","srs.bootstrap.data","ipw.pi.competing"))
+      clusterExport(cl,c("fdrtool","nloptr","ipw.pi.competing"))
+      
+     # clusterExport(cl,c("fdrtool","nloptr","bootstrap.result","srs.bootstrap.data","ipw.pi.competing"))
       registerDoParallel(cl)
-      res1 <- foreach(n = 1:n.boot*2, .combine = c, .packages = c("fdrtool","nloptr","bootstrap.result","srs.bootstrap.data","ipw.pi.competing"), .errorhandling=c('pass')) %dopar% 
-        while(b.iter==0){b.out<-bootstrap.result(Data)
-              if(is.matrix((summary(res1)))){
-               success.list<-which(summary(res1)[,1]!=0)
-               n.success<-length(success.list)
-               if(n.success>=n.boot) {
-                 b.iter<-1
-               }
-              }    
-      }#when
+      res1 <- foreach(n = 1:n.boot, .combine = c, .packages = c("fdrtool","nloptr"), .errorhandling=c('pass')) %dopar% 
+        {b.out<-try(bootstrap.result(Data),silent = TRUE)
+        b.out}
+      
+      reg.ind<-which(row.names(summary(res1))=="reg.coef")
+      h1.ind<-which(row.names(summary(res1))=="subdist.hazard1")
+      h2.ind<-which(row.names(summary(res1))=="subdist.hazard2")  
+      
+      regpara.summary<-sapply(X=reg.ind,FUN=function(X) as.numeric(as.character(res1[X]$reg.coef$coef)))
+      boot.reg<-data.frame(t(regpara.summary))
+      names(boot.reg)<-as.character(res1[reg.ind[1]]$reg.coef$label)
+      
+      L1<-sapply(X=h1.ind,FUN=function(X) res1[X]$subdist.hazard1$Lambda)
+      time1<-res1[h1.ind[1]]$subdist.hazard1$time
+      boot.L1<-t(L1)
+        
+      L2<-sapply(X=h2.ind,FUN=function(X) res1[X]$subdist.hazard2$Lambda)
+      time2<-res1[h2.ind[1]]$subdist.hazard2$time
+      boot.L2<-t(L2)
+      if(length(reg.ind)<n.boot){
+        n.fail<-n.boot-length(reg.ind)
+        com<-paste0("Disconvergence of the algorithm arrises at ",n.fail," bootstrap samples")
+       warning(com) 
+      }
       stopCluster(cl) 
       
-      
-      summary.reg.coef<-sapply(X=success.list,FUN=function(X) res1[[X]]$reg.para$coef)
-      regpara.summary<-data.frame(cbind(t(summary.reg.coef[1:n.beta,]),
-                                        t(summary.reg.coef[mm1:mm2,]),
-                                        t(summary.reg.coef[mm3:mm4,])))
-      names(regpara.summary)<-c(paste0('beta.',seq(1,n.beta) ),
-                                paste0('gam1.',seq(1,n.gamma1)),
-                                paste0('gam2.',seq(1,n.gamma2)))
-               
-              
-       boot.reg<-data.frame(beta=t(regpara[1:n.beta]),gam1=t(regpara[mm1:mm2]),gam2=t(regpara[mm3:mm4]))
-       
-       boot.L1<-sapply(X=success.list,FUN=function(X) res1[[X]]$subdist.hazard1$Lambda)
-       boot.L2<-sapply(X=success.list,FUN=function(X) res1[[X]]$subdist.hazard2$Lambda)
-       boot.L1<-t(boot.L1)
-       boot.L2<-t(boot.L2)
-       time<-res1[[success.list[1]]]$subdist.hazard2$time
-      
-    }else{
+      } else{
+        
+        b.iter<-0
+        boot.reg<-boot.L1<-boot.L2<-res1<-NULL
+        
       while(b.iter<n.boot){
-        b.out<-bootstrap.result(Data)
+        b.out<-try(bootstrap.result(Data),silent = TRUE)
         if(class(b.out)=="list"){
           b.iter<-b.iter+1
-          regpara<-as.numeric(as.character(b.out$reg.para$coef))
-          regpara.summary<-data.frame(beta=t(regpara[1:n.beta]),gam1=t(regpara[mm1:mm2]),gam2=t(regpara[mm3:mm4]))
+          regpara<-as.numeric(as.character(b.out$reg.coef$coef))
+          regpara.summary<-data.frame(t(regpara))
+          
           L1<-b.out$subdist.hazard1$Lambda
           L2<-b.out$subdist.hazard2$Lambda
           row.names(L1)<-row.names(L2)<-NULL
@@ -157,7 +155,12 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
           boot.reg<-rbind(boot.reg,regpara.summary)
           boot.L1<-rbind(boot.L1,L1)
           boot.L2<-rbind(boot.L2,L2)
-          time<-b.out$subdist.hazard2$time
+          
+          if(b.iter==n.boot){
+            names(boot.reg)<-as.character(b.out$reg.coef$label)
+            time1<-b.out$subdist.hazard1$time
+            time2<-b.out$subdist.hazard2$time
+          }
           remove(b.out)
       }#if
     }#while
@@ -165,9 +168,10 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
     
   output<-list()
   output$reg.coef<-boot.reg
-  output$time<-time
   output$subdist.hazard1<-boot.L1
   output$subdist.hazard2<-boot.L2
+  output$time1<-time1
+  output$time2<-time2
   return(output)
 
 }  # the end of the function ipw.bootstrap.ph2
