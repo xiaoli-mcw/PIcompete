@@ -2,7 +2,7 @@
 #' we adopted the two-phase weighted bootstrap procedure (Hyun et al, reference). We fit ipw.pi.competing function from main.R to 
 #' the bootstrap weighted data.The most arguments except for three arguments, n.boot, parallel, n.core are necessary for fitting "ipw.pi.competing" function.
 #' 
-#' @import fdrtool nloptr parallel doParallel
+#' @import parallel doParallel
 #' 
 #' @param n.boot the number of replications for bootstrap resampling 
 #' @param parallel if parallel=TRUE, n.core should be specified. Default to FALSE.
@@ -101,12 +101,13 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
   
       
     if(parallel==TRUE){
-      library(parallel)
-      library(doParallel)
+      #library(parallel)
+      #library(doParallel)
       
       
       cl <- makeCluster(n.core)
       clusterExport(cl,c("fdrtool","nloptr","ipw.pi.competing"))
+        #clusterExport(cl, "ipw.pi.competing")
       
      # clusterExport(cl,c("fdrtool","nloptr","bootstrap.result","srs.bootstrap.data","ipw.pi.competing"))
       registerDoParallel(cl)

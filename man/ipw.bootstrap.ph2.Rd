@@ -6,9 +6,9 @@
 we adopted the two-phase weighted bootstrap procedure (Hyun et al, reference). We fit ipw.pi.competing function from main.R to 
 the bootstrap weighted data.The most arguments except for three arguments, n.boot, parallel, n.core are necessary for fitting "ipw.pi.competing" function.}
 \usage{
-ipw.bootstrap.ph2(n.boot, Data, p.model, i.model1, i.model2, trans.r1 = 0,
-  trans.r2 = 0, n.beta = 1, n.gamma1 = 0, n.gamma2 = 0,
-  reg.initials = NULL, convergence.criteria = 0.001,
+ipw.bootstrap.ph2(n.boot, Data, p.model, i.model1, i.model2,
+  trans.r1 = 0, trans.r2 = 0, n.beta = 1, n.gamma1 = 0,
+  n.gamma2 = 0, reg.initials = NULL, convergence.criteria = 0.001,
   iteration.limit = 250, time.interval, time.list = NULL,
   parallel = FALSE, n.core = NULL, ...)
 }
