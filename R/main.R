@@ -1224,7 +1224,7 @@ ipw.pi.competing<-function(Data,p.model,i.model1,i.model2,trans.r1=0,trans.r2=0,
     }else if(n.gamma1==0&n.gamma2==0){
       resw<-optim(old.wNR.est,wsemi.opt,gr=grad.f,method="BFGS")
     }
-    
+
     
 ############### insert the cut codes
     
