@@ -6,7 +6,7 @@
 #' 
 #' @param input the output obtained from ipw.pi.competing 
 #' @param p.mat design matrix for predicting prevalence by using the inverse of logit function; 
-#' both of vector and matrix type are allowed; the first component or column should include 1 for the intercept.
+#' both of vector and matrix types are allowed; the first component or column should include 1 for the intercept.
 #' @param i.mat1 design matrix for predicting cumulative sub-distribution hazards and cumulative incidences for event 1
 #' @param i.mat2 design matrix for predicting cumulative sub-distribution hazards and cumulative incidences for event 2
 #' @param time.points time points at which cumulative sub-distribution hazards and cumulative incidences for events 1 and 2 are predicted
