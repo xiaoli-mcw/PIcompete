@@ -2,7 +2,10 @@
 
 export(ipw.bootstrap.ph2)
 export(ipw.pi.competing)
+export(pi.predict)
+export(bootstrap.summary)
 import(doParallel)
 import(fdrtool)
+import(foreach)
 import(nloptr)
 import(parallel)
