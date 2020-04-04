@@ -10,7 +10,7 @@
 #' @param i.mat1 design matrix for predicting cumulative sub-distribution hazards and cumulative incidences for event 1
 #' @param i.mat2 design matrix for predicting cumulative sub-distribution hazards and cumulative incidences for event 2
 #' @param time.points time points at which cumulative sub-distribution hazards and cumulative incidences for events 1 and 2 are predicted
-#' @param alpha The nominal coverage probability is (1-alpha)*100%. Default to 0.05
+#' @param alpha The nominal coverage probability is (1-alpha)*100\%. Default to 0.05
 #' @return The output is a list of class ipw.bootstrap.ph2, which contains the following elements.
 #'  \itemize{
 #'  \item reg.covariance  empirical distribution based-covariance for the regression coefficients included in o.input
@@ -24,8 +24,6 @@
 #'  \item p.mat the input information, the design matrix for prevalence
 #'  \item i.mat1 the input information, the design matrix for cumulative sub-distribution hazard and cumulative incidence for event 1
 #'  \item i.mat2 the input information, the design matrix for cumulative sub-distribution hazard and cumulative incidence for event 1
-#'  
-
 #'  }
 #'
 #' @author Noorie Hyun, \email{nhyun@mcw.edu}, Xiao Li \email{xiaoli@mcw.edu} 
