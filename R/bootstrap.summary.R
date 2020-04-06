@@ -188,24 +188,19 @@ bootstrap.summary<-function(o.input,b.input,p.mat,i.mat1,i.mat2,time.points,alph
   colnames(prev.ci)<-paste0("p.mat row",seq(1,n.design1))
  
   ######### event 1: empirical confidence intervals for cumulative sub-distribution hazard and incidence estimates ###############
-  o.L1.e<-foreach(x = 1:n.design2, .combine = rbind, .packages = c("foreach")) %do% {
+  o.L1.e<-foreach(x = 1:n.design2, .combine = rbind) %do% {
     o.L1.e.out<-trans.hazard.fn(time.list=o.input$subdist.hazard1$time,subdist.hazard=o.input$subdist.hazard1$Lambda,
                                 risk=oi.risk1[x,1],trans.r=r1,time.points)
     o.L1.e.out
   }   
   colnames(o.L1.e)<-time.points
   
-  o.L1.e.h<-o.L1.e[which(rownames(o.L1.e)=="hazard"),]
-  o.L1.e.i<-o.L1.e[which(rownames(o.L1.e)=="incidence"),]
-  if(class(o.L1.e.h)=="numeric"){
-    o.L1.e.h<-matrix(o.L1.e.h,1,n.times)
-  }
-  if(class(o.L1.e.i)=="numeric"){
-    o.L1.e.i<-matrix(o.L1.e.i,1,n.times)
-  }
+  o.L1.e.h<-o.L1.e[which(rownames(o.L1.e)=="hazard"), , drop = FALSE]
+  o.L1.e.i<-o.L1.e[which(rownames(o.L1.e)=="incidence"), , drop = FALSE]
+
   
-  L1.e<-foreach(x = 1:n.design2, .combine = rbind, .packages = c("foreach")) %:%
-         foreach(y=1:b.rep,.combine=rbind, .packages = c("foreach")) %do% {
+  L1.e<-foreach(x = 1:n.design2, .combine = rbind) %:%
+         foreach(y=1:b.rep,.combine=rbind) %do% {
     L1.e.out<-trans.hazard.fn(time.list=b.input$time1,subdist.hazard=b.input$subdist.hazard1[y,],
                      risk=i.risk1[x,y],trans.r=r1,time.points)
     L1.e.out
@@ -214,24 +209,24 @@ bootstrap.summary<-function(o.input,b.input,p.mat,i.mat1,i.mat2,time.points,alph
   h.ind<-which(rownames(L1.e)=="hazard" )
   i.ind<-which(rownames(L1.e)=="incidence")
   
-  L1.e.h<-L1.e[h.ind,]
-  L1.e.i<-L1.e[i.ind,]
+  L1.e.h<-L1.e[h.ind, , drop = FALSE]
+  L1.e.i<-L1.e[i.ind, , drop = FALSE]
   
   ############# to find quantiles ######################
   
-  hazard1.q<-foreach(x = 1:n.design2, .combine = rbind, .packages = c("foreach")) %:%
-    foreach(y=1:n.times,.combine=cbind, .packages = c("foreach")) %do% {
+  hazard1.q<-foreach(x = 1:n.design2, .combine = rbind) %:%
+    foreach(y=1:n.times,.combine=cbind) %do% {
       shift1<-mean(L1.e.h[(1+(x-1)*b.rep):(x*b.rep),y])-o.L1.e.h[x,y]
       qout<- quantile.fn(L1.e.h[(1+(x-1)*b.rep):(x*b.rep),y]-shift1,alpha)
-     qout
+     as.matrix(qout)
     }
   
   
-  cuminc1.q<-foreach(x = 1:n.design2, .combine = rbind, .packages = c("foreach")) %:%
-    foreach(y=1:n.times,.combine=cbind, .packages = c("foreach")) %do% {
+  cuminc1.q<-foreach(x = 1:n.design2, .combine = rbind) %:%
+    foreach(y=1:n.times,.combine=cbind) %do% {
       shift1<-mean(L1.e.i[(1+(x-1)*b.rep):(x*b.rep),y])-o.L1.e.i[x,y]
       qout<- quantile.fn(L1.e.i[(1+(x-1)*b.rep):(x*b.rep),y]-shift1,alpha)
-      qout
+      as.matrix(qout)
     }
   
   ############# Labeling  ##########################
@@ -246,25 +241,19 @@ bootstrap.summary<-function(o.input,b.input,p.mat,i.mat1,i.mat2,time.points,alph
   
   
   ######### event 2: empirical confidence intervals for cumulative sub-distribution hazard and incidence estimates ###############
-  o.L2.e<-foreach(x = 1:n.design3, .combine = rbind, .packages = c("foreach")) %do% {
+  o.L2.e<-foreach(x = 1:n.design3, .combine = rbind) %do% {
       o.L2.e.out<-trans.hazard.fn(time.list=o.input$subdist.hazard2$time,subdist.hazard=o.input$subdist.hazard2$Lambda,
                                 risk=oi.risk2[x,1],trans.r=r2,time.points)
       o.L2.e.out
     }   
   colnames(o.L2.e)<-time.points
   
-  o.L2.e.h<-o.L2.e[which(rownames(o.L2.e)=="hazard"),]
-  o.L2.e.i<-o.L2.e[which(rownames(o.L2.e)=="incidence"),]
+  o.L2.e.h<-o.L2.e[which(rownames(o.L2.e)=="hazard"), , drop = FALSE]
+  o.L2.e.i<-o.L2.e[which(rownames(o.L2.e)=="incidence"), , drop = FALSE]
   
-  if(class(o.L2.e.h)=="numeric"){
-    o.L2.e.h<-matrix(o.L2.e.h,1,n.times)
-  }
-  if(class(o.L2.e.i)=="numeric"){
-    o.L2.e.i<-matrix(o.L2.e.i,1,n.times)
-  }
   
-  L2.e<-foreach(x = 1:n.design3, .combine = rbind, .packages = c("foreach")) %:%
-    foreach(y=1:b.rep,.combine=rbind, .packages = c("foreach")) %do% {
+  L2.e<-foreach(x = 1:n.design3, .combine = rbind) %:%
+    foreach(y=1:b.rep,.combine=rbind) %do% {
       L2.e.out<-trans.hazard.fn(time.list=b.input$time1,subdist.hazard=b.input$subdist.hazard2[y,],
                                 risk=i.risk2[x,y],trans.r=r2,time.points)
       L2.e.out
@@ -273,24 +262,24 @@ bootstrap.summary<-function(o.input,b.input,p.mat,i.mat1,i.mat2,time.points,alph
   h.ind2<-which(rownames(L2.e)=="hazard" )
   i.ind2<-which(rownames(L2.e)=="incidence")
   
-  L2.e.h<-L2.e[h.ind2,]
-  L2.e.i<-L2.e[i.ind2,]
+  L2.e.h<-L2.e[h.ind2, , drop = FALSE]
+  L2.e.i<-L2.e[i.ind2, , drop = FALSE]
   
   ############# to find quantiles ######################
   
-  hazard2.q<-foreach(x = 1:n.design3, .combine = rbind, .packages = c("foreach")) %:%
-    foreach(y=1:n.times,.combine=cbind, .packages = c("foreach")) %do% {
+  hazard2.q<-foreach(x = 1:n.design3, .combine = rbind) %:%
+    foreach(y=1:n.times,.combine=cbind) %do% {
       shift2<-mean(L2.e.h[(1+(x-1)*b.rep):(x*b.rep),y])-o.L2.e.h[x,y]
       qout<- quantile.fn(L2.e.h[(1+(x-1)*b.rep):(x*b.rep),y]-shift2,alpha)
-      qout
+      as.matrix(qout)
     }
   
   
-  cuminc2.q<-foreach(x = 1:n.design3, .combine = rbind, .packages = c("foreach")) %:%
-    foreach(y=1:n.times,.combine=cbind, .packages = c("foreach")) %do% {
+  cuminc2.q<-foreach(x = 1:n.design3, .combine = rbind) %:%
+    foreach(y=1:n.times,.combine=cbind) %do% {
       shift2<-mean(L2.e.i[(1+(x-1)*b.rep):(x*b.rep),y])-o.L2.e.i[x,y]
       qout<- quantile.fn(L2.e.i[(1+(x-1)*b.rep):(x*b.rep),y]-shift2,alpha)
-      qout
+      as.matrix(qout)
     }
   
   ############# Labeling  ##########################
