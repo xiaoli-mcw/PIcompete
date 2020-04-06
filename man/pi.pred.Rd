@@ -4,9 +4,7 @@
 \alias{pi.pred}
 \title{Based on the output obtained by applying ipw.pi.competing function to data, 
 pi.predict function calculates predicted prevalence by using the inverse function of logit function, 
-cumulative sub-distribution hazards and cumulative incidences for events 1 and 2.
-#' 
-#@import}
+cumulative sub-distribution hazards and cumulative incidences for events 1 and 2.}
 \usage{
 pi.pred(input, p.mat, i.mat1, i.mat2, time.points)
 }
@@ -36,8 +34,6 @@ The output is a list of class pi.predict, which contains the following elements.
 Based on the output obtained by applying ipw.pi.competing function to data, 
 pi.predict function calculates predicted prevalence by using the inverse function of logit function, 
 cumulative sub-distribution hazards and cumulative incidences for events 1 and 2.
-#' 
-#@import
 }
 \references{
 \itemize{
