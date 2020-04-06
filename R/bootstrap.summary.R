@@ -57,6 +57,7 @@ bootstrap.summary<-function(o.input,b.input,p.mat,i.mat1,i.mat2,time.points,alph
   
   risk.fn<-function(coef,mat){
     coef<-as.numeric(as.character(coef))
+    risk <- NULL
     if(class(mat)=="matrix"){
       risk<-mat%*%coef
     }else if(class(mat)=="numeric"){
