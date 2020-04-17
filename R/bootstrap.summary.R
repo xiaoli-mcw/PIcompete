@@ -1,7 +1,7 @@
 #' Based on the output obtained from ipw.bootstrap.ph2 function, empirical distribution based-variance/-confidence intervals for the estimated regression coefficients,
 #' prevalences, cumulative sub-distribution hazards and cumulative incidences for events 1 and 2 are calculated. 
 #' 
-#' @import foreach
+#' @importFrom foreach %:% %do% %dopar%
 #'  
 #' @param o.input the model fit output obtained from ipw.pi.competing function 
 #' @param b.input the bootstrap output obtained from ipw.bootstrap.ph2 function

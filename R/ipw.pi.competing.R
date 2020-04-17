@@ -8,7 +8,8 @@
 #' for flexible incidence models. Logistic regression models are used for prevalence. The IPW log-likelihood approach, which uses the inverse of sample inclusion probabilities,
 #' is employed to account for different sampling fractions across strata. 
 #' 
-#' @import fdrtool nloptr
+#' @importFrom fdrtool gcmlcm
+#' @importFrom nloptr cobyla
 #' 
 #' @param Data Data used to fit the model containing columns for each term in p.model, i.model1 and i.model2 expressions.
 #'  For stratified random sampling designs, columns denoted samp.wgt and strata are expected indicating the sampling weights and sampling strata.

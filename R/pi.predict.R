@@ -2,7 +2,6 @@
 #' pi.predict function calculates predicted prevalence by using the inverse function of logit function, 
 #' cumulative sub-distribution hazards and cumulative incidences for events 1 and 2.
 #' 
-#  @import 
 #' 
 #' @param input the output obtained from ipw.pi.competing 
 #' @param p.mat design matrix for predicting prevalence by using the inverse of logit function; 

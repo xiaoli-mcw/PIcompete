@@ -2,7 +2,9 @@
 #' we adopted the two-phase weighted bootstrap procedure (Hyun et al, reference). We fit ipw.pi.competing function from main.R to 
 #' the bootstrap weighted data.The most arguments except for three arguments, n.boot, parallel, n.core are necessary for fitting "ipw.pi.competing" function.
 #' 
-#' @import parallel doParallel
+#' @importFrom parallel makeCluster clusterExport stopCluster
+#' @importFrom doParallel registerDoParallel
+#' @importFrom foreach foreach
 #' 
 #' @param n.boot the number of replications for bootstrap resampling 
 #' @param parallel if parallel=TRUE, n.core should be specified. Default to FALSE.
@@ -94,22 +96,16 @@ ipw.bootstrap.ph2<-function(n.boot,Data,p.model,i.model1,i.model2,trans.r1=0,tra
     return(boot.out)
   }
   ##################################################
-  if(parallel==TRUE&is.null(n.core)){
-    stop('Specify the number of corse, "n.core" argument for parallel computing.')
+  if(parallel&is.null(n.core)){
+    stop('Specify the number of cores, "n.core" argument for parallel computing.')
   }
   
   
       
-    if(parallel==TRUE){
-      #library(parallel)
-      #library(doParallel)
-      
-      
+    if(parallel){
       cl <- makeCluster(n.core)
-      clusterExport(cl,c("fdrtool","nloptr","ipw.pi.competing"))
-        #clusterExport(cl, "ipw.pi.competing")
-      
-     # clusterExport(cl,c("fdrtool","nloptr","bootstrap.result","srs.bootstrap.data","ipw.pi.competing"))
+      clusterExport(cl,c("ipw.pi.competing"))
+        
       registerDoParallel(cl)
       res1 <- foreach(n = 1:n.boot, .combine = c, .packages = c("fdrtool","nloptr"), .errorhandling=c('pass')) %dopar% 
         {b.out<-try(bootstrap.result(Data),silent = TRUE)
