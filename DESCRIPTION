@@ -4,7 +4,7 @@ Title: Prevalence-Incidence mixture model for competing risks time-to-event outc
 Version: 1.0
 Date: 2020-03-11
 Author@R: c(person('Noorie', 'Hyun', role=c('aut', 'cre'), email='nhyun@mcw.edu'), person('Xiao', 'Li', role='aut'))
-Description: This package fits competing risks models to failure time (or survival time) data for two competing events. Failure time for one event of the competing events can be prevalent left-censored, interval-censored or a mixture of truly incident disease and missed prevalent disease when disease ascertainment is not always conducted at baseline, while failure time for the other event is only interval-censored. Baseline is set to be time 0. This package also provides the option for handling stratafied random samples with different probability sampling fractions across strata.
+Description: This package provides a computational tool to fit competing risks semiparametric regression models for two competing failure time (or survival time) outcomes. Failure time for one event of the competing events can be prevalent left-censored, interval-censored or a mixture of truly incident disease and missed prevalent disease when disease ascertainment is not always conducted at baseline. Whereas failure time for the other event is only interval-censored. Baseline is set to be time 0. This package also provides the option for handling stratafied random samples with different probability sampling fractions across strata.
 Imports: fdrtool, nloptr, parallel, doParallel, foreach
 LazyData: true
 RoxygenNote: 6.1.1
